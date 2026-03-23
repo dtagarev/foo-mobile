@@ -14,14 +14,17 @@ import {
 } from '../../src/redis/redis.keys';
 import * as express from 'express';
 import { setFips } from 'crypto';
+import { ThrottlerStorage } from '@nestjs/throttler';
 
 describe('Validator controller (e2e)', () => {
   let app: INestApplication<App>;
   let dataSource: DataSource;
 
   let cacheManager: Cache;
+  
+  let throttlerStorage: ThrottlerStorage;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
         ConfigModule.forRoot({
@@ -75,6 +78,8 @@ describe('Validator controller (e2e)', () => {
     
 
     cacheManager = await app.get<Cache>(CACHE_MANAGER);
+
+    throttlerStorage = app.get(ThrottlerStorage);
   });
 
   afterAll(async () => {
@@ -82,6 +87,7 @@ describe('Validator controller (e2e)', () => {
     for (const store of cacheManager.stores) {
       await store.disconnect();
     }
+    await cacheManager.disconnect();
     await app.close();
   });
 
@@ -96,6 +102,8 @@ describe('Validator controller (e2e)', () => {
     for (const store of cacheManager.stores) {
       await store.clear();
     }
+    
+    throttlerStorage['storage'].clear(); 
   });
 
   describe('Validate ip api', () => {
@@ -141,6 +149,7 @@ describe('Validator controller (e2e)', () => {
     it('/validate/phone (POST) return correct data', async () => {
       let myPhone: string = '+359 878 168 609';
 
+      
       await request(app.getHttpServer())
         .post('/validate/phone')
         .send({ phone: myPhone })

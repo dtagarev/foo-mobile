@@ -36,14 +36,14 @@ export class ValidatorService {
     this.cacheManager.set(phoneFraudScoreKey(phone), fraudScore, 300_000);
   }
 
-  private sendSmsIfValidPhone(
+  private async sendSmsIfValidPhone(
     phone: string,
     fraudScore: number,
     message: string = 'hello, is it me you are looking for?',
   ) {
     if (fraudScore === 0) {
       console.log('Sending SMS message!');
-      this.smsService.sendMessage(phone, message);
+      await this.smsService.sendMessage(phone, message);
     }
   }
 
@@ -72,13 +72,13 @@ export class ValidatorService {
     }
 
     //store in the database and in cache, with retencion 5 mins
-    this.setIpInCache(ip, res.fraudScore);
+    await this.setIpInCache(ip, res.fraudScore);
 
-    const ipEntity = this.ipRepository.create({
+    const ipEntity = await this.ipRepository.create({
       ip: ip,
       fraudScore: res.fraudScore,
     });
-    this.ipRepository.save(ipEntity);
+    await this.ipRepository.save(ipEntity);
 
     return res.fraudScore;
   }
@@ -118,13 +118,13 @@ export class ValidatorService {
     }
 
     //store in the database and in cache, with retencion 5 mins
-    this.setPhoneInCache(phone, res.fraudScore);
+    await this.setPhoneInCache(phone, res.fraudScore);
 
-    const phoneEntity = this.phoneRepository.create({
+    const phoneEntity = await this.phoneRepository.create({
       phone: phone,
       fraudScore: res.fraudScore,
     });
-    this.phoneRepository.save(phoneEntity);
+    await this.phoneRepository.save(phoneEntity);
 
     this.sendSmsIfValidPhone(phone, res.fraudScore);
     return res.fraudScore;
