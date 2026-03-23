@@ -12,6 +12,19 @@ It is designed to be fast, reliable, and scalable by leveraging **Redis for cach
 $ npm install
 ```
 
+This project requires environment configuration files to run properly:
+
+.env — contains configuration for local development
+.env.test — contains configuration for the test environment
+
+These files are not included in the repository for security reasons.
+
+> ⚠️ **Important:** If you want to run the project or the integration tests locally, please contact me to receive the necessary `.env` and `.env.test` files.
+>
+> Additionally, you need to create the Postgres and Redis databases in Docker containers. The commands to do this are simple one-liners, and I will share them together with the `.env` files.
+
+Once you have the files, place them in the project root directory.
+
 ## Compile and run the project
 
 ```bash
@@ -21,8 +34,6 @@ $ npm run start
 # watch mode
 $ npm run start:dev
 
-# production mode
-$ npm run start:prod
 ```
 
 ## Run tests
@@ -38,29 +49,29 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
-## ⚙️ Tech Stack
+## Tech Stack
 
 * **Backend:** NestJS (Node.js, TypeScript)
 * **Database:** PostgreSQL (via TypeORM)
 * **Cache:** Redis (via CacheModule)
 * **External APIs:**
 
-  * IP validation service (IPQualityScore or similar)
+  * IP and Phone validation service (IPQualityScore)
   * SMS provider (Twilio)
 
 
-## 📡 API Endpoints
+## API Endpoints
 
 ### Validate IP
 
 ```
-POST /ip/validate
+POST /validate/ip
 ```
 
 ### Validate Phone (and send SMS if valid)
 
 ```
-POST /phone/validate
+POST /validate/phone
 ```
 
 ---
@@ -69,4 +80,4 @@ POST /phone/validate
 
 * **Unit Tests** – Services and business logic
 * **E2E Tests** – Full request flow including DB and cache
-* External services (Twilio, IP validation)
+* External services (Twilio, IPQS)
