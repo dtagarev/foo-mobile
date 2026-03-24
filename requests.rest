@@ -1,0 +1,75 @@
+###  My Ip with fraud score 0
+
+POST http://localhost:3000/validate/ip
+Content-Type: application/json
+
+{
+  "ip": "46.232.154.139"
+}
+
+###  Ip with fraud score 0
+
+POST http://localhost:3000/validate/ip
+Content-Type: application/json
+
+{
+  "ip": "46.232.134.138"
+}
+
+
+###  Ip with fraud score 75
+
+POST http://localhost:3000/validate/ip
+Content-Type: application/json
+
+{
+  "ip": "46.162.174.128"
+}
+
+
+### Invalid Ip
+POST http://localhost:3000/validate/ip
+Content-Type: application/json
+
+{
+  "ip": "1234"
+}
+
+### Bg Phone number fraudScore 0
+POST http://localhost:3000/validate/phone
+Content-Type: application/json
+
+{
+  "phone": "+359 878 15x xxx"
+}
+
+
+### Bg Phone number fraudScore 0
+POST http://localhost:3000/validate/phone
+Content-Type: application/json
+
+{
+  "phone": "+35987815xxxx"
+}
+
+### bg Phone number fraudScore 0
+POST http://localhost:3000/validate/phone
+Content-Type: application/json
+
+{
+  "phone": "+359 878 16x xxx"
+}
+
+# +12025550123
+# +14155550100
+
+### random us valid Phone number fraudscore 100
+POST http://localhost:3000/validate/phone
+Content-Type: application/json
+
+{
+  "phone": "+14155551234"
+}
+
+### 
+GET http://localhost:3000/
