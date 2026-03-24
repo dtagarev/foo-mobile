@@ -26,14 +26,14 @@ export class ValidatorService {
     private cacheManager: Cache,
   ) {}
 
-  private setIpInCache(ip: string, fraudScore: number) {
+  private async setIpInCache(ip: string, fraudScore: number) {
     //ttl - 5 minutes in milliseconds
-    this.cacheManager.set(ipFraudScoreKey(ip), fraudScore, 300_000);
+    await this.cacheManager.set(ipFraudScoreKey(ip), fraudScore, 300_000);
   }
 
-  private setPhoneInCache(phone: string, fraudScore: number) {
+  private async setPhoneInCache(phone: string, fraudScore: number) {
     //ttl - 5 minutes in milliseconds
-    this.cacheManager.set(phoneFraudScoreKey(phone), fraudScore, 300_000);
+    await this.cacheManager.set(phoneFraudScoreKey(phone), fraudScore, 300_000);
   }
 
   private async sendSmsIfValidPhone(
@@ -47,7 +47,7 @@ export class ValidatorService {
     }
   }
 
-  async validateIp(ip: string) {
+  async validateIp(ip: string): Promise<number> {
     // check the redis for already stored ips
     const cachedResult = (await this.cacheManager.get(
       ipFraudScoreKey(ip),
@@ -61,7 +61,7 @@ export class ValidatorService {
     const storedIp: Ip | null = await this.ipRepository.findOneBy({ ip });
 
     if (storedIp !== null && storedIp.fraudScore !== -1) {
-      this.setIpInCache(ip, storedIp.fraudScore);
+      await this.setIpInCache(ip, storedIp.fraudScore);
       return storedIp.fraudScore;
     }
 
@@ -101,7 +101,7 @@ export class ValidatorService {
     });
 
     if (storedPhone !== null && storedPhone.fraudScore !== -1) {
-      this.setPhoneInCache(phone, storedPhone.fraudScore);
+      await this.setPhoneInCache(phone, storedPhone.fraudScore);
       this.sendSmsIfValidPhone(phone, storedPhone.fraudScore);
       return storedPhone.fraudScore;
     }
