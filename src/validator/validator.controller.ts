@@ -4,7 +4,6 @@ import {
   Body,
   UsePipes,
   ValidationPipe,
-  UseInterceptors,
   UseGuards,
 } from '@nestjs/common';
 import { ValidatorService } from './validator.service';
@@ -15,16 +14,16 @@ import { PhoneResponceDto } from './dtos/phone.response.dto';
 import { ThrottlerGuard } from '@nestjs/throttler';
 
 @Controller('validate')
+@UsePipes(
+  new ValidationPipe({
+    transform: true,
+    whitelist: true,
+  }),
+)
 export class ValidatorController {
   constructor(private ipService: ValidatorService) {}
 
   @Post('ip')
-  @UsePipes(
-    new ValidationPipe({
-      transform: true,
-      whitelist: true,
-    }),
-  )
   async validateIp(@Body() dto: ValidateIpDto): Promise<IpResponceDto> {
     try {
       const fraudScore = await this.ipService.validateIp(dto.ip);
@@ -42,12 +41,6 @@ export class ValidatorController {
 
   @Post('phone')
   @UseGuards(ThrottlerGuard)
-  @UsePipes(
-    new ValidationPipe({
-      transform: true,
-      whitelist: true,
-    }),
-  )
   async validatePhone(
     @Body() dto: ValidatePhoneDto,
   ): Promise<PhoneResponceDto> {
