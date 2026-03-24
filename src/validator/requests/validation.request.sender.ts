@@ -18,14 +18,19 @@ export type PhoneRequestInfo = {
 
 @Injectable()
 export class ValidationRequestSender {
+  
+  private apiToken: string;
+
   constructor(
     private readonly httpService: HttpService,
     private configService: ConfigService,
-  ) {}
+  ) {
+    this.apiToken = this.configService.get('IPQS_API_TOKEN');
+  }
 
   async verifyIp(ip: string): Promise<IpRequestInfo> {
     const requestUrl: string = UrlGenerator.getUrlForIp(
-      this.configService.get('IPQS_API_TOKEN'),
+      this.apiToken,
       ip,
     );
 
@@ -39,9 +44,9 @@ export class ValidationRequestSender {
     } as IpRequestInfo;
   }
 
-  async verifyPhone(phone: string) {
+  async verifyPhone(phone: string): Promise<PhoneRequestInfo> {
     const requestUrl: string = UrlGenerator.getUrlForPhone(
-      this.configService.get('IPQS_API_TOKEN'),
+      this.apiToken,
       phone,
     );
 
