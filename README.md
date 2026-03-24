@@ -12,6 +12,7 @@ It is designed to be fast, reliable, and scalable by leveraging **Redis for cach
 $ npm install
 ```
 
+
 This project requires environment configuration files to run properly:
 
 .env — contains configuration for local development
