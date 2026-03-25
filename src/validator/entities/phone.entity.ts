@@ -8,6 +8,6 @@ export class Phone {
   @Column()
   phone: string;
 
-  @Column({ default: -1 })
+  @Column()
   fraudScore: number;
 }

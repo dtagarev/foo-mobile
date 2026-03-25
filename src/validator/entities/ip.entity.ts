@@ -8,6 +8,6 @@ export class Ip {
   @Column()
   ip: string;
 
-  @Column({ default: -1 })
+  @Column()
   fraudScore: number;
 }
